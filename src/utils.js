@@ -3,22 +3,24 @@ import { timeParse } from "d3-time-format";
 
 function parseData(parse) {
 	return function(d) {
-		d.date = parse(d.date);
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-
+		d.date = parse(d.Date);
+		d.open = +d.Open;
+		d.high = +d.High;
+		d.low = +d.Low;
+		d.close = +d.Close;
+		d.volume = +d.Volume;
 		return d;
 	};
 }
 
-const parseDate = timeParse("%Y-%m-%d");
+const parseDate = timeParse("%Y-%m-%d %H:%M:%S");
 
 export function getData() {
-	const promiseMSFT = fetch("https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/MSFT.tsv")
+	const promiseMSFT = fetch("https://cdn.jsdelivr.net/gh/holybobrius/finance-chart-task/coin_Aave.csv")
 		.then(response => response.text())
-		.then(data => tsvParse(data, parseData(parseDate)))
+		.then(data => csvParse(data, parseData(parseDate)))
 	return promiseMSFT;
 }
+
+
+

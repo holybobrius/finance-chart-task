@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -13,6 +14,7 @@ import BarSeries from "react-stockcharts/lib/series/BarSeries";
 
 let CandleStickChart = (props) => {
 	const { type, width, data, ratio } = props;
+  const { mouseMoveEvent, panEvent, zoomEvent, zoomAnchor } = props;
 	const xAccessor = d => d.date;
 	const xExtents = [
 		xAccessor(last(data)),
@@ -65,9 +67,40 @@ let CandleStickChart = (props) => {
             displayFormat={format(".2f")} 
         />
 			</Chart>
+      <Chart id={2}
+					yExtents={d => d.volume}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis
+						axisAt="left"
+						orient="left"
+						ticks={5}
+						tickFormat={format(".2s")}
+						zoomEnabled={zoomEvent}
+					/>
+
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="left"
+						orient="left"
+						displayFormat={format(".4s")} />
+
+					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
+				</Chart>
 		</ChartCanvas>
 	);
 }
+
+CandleStickChart.propTypes = {
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
 
 CandleStickChart = fitWidth(CandleStickChart);
 
