@@ -16,7 +16,7 @@ function parseData(parse) {
 const parseDate = timeParse("%Y-%m-%d %H:%M:%S");
 
 export function getData() {
-	const promiseMSFT = fetch("https://cdn.jsdelivr.net/gh/holybobrius/finance-chart-task/coin_Aave.csv")
+	const promiseMSFT = fetch("https://cdn.jsdelivr.net/gh/holybobrius/finance-chart-task/coin_Bitcoin.csv")
 		.then(response => response.text())
 		.then(data => csvParse(data, parseData(parseDate)))
 	return promiseMSFT;

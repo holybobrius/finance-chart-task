@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -40,6 +39,7 @@ let CandleStickChart = (props) => {
     tickStrokeOpacity: 0.2,
     tickStrokeWidth: 1
   } : {};
+  console.log(width)
 
 	return (
 		<ChartCanvas height={800}
@@ -54,9 +54,13 @@ let CandleStickChart = (props) => {
 					xExtents={xExtents}>
 
 			<Chart id={1} yExtents={d => [d.high, d.low]}>
-				<XAxis axisAt="bottom" orient="bottom" ticks={23} {...xGrid} />
-				<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} />
-				<CandlestickSeries width={timeIntervalBarWidth(utcDay)}/>
+				<XAxis axisAt="bottom" orient="bottom" ticks={23} {...xGrid} stroke='#2E313E' tickStroke='#ACAFB8'/>
+				<YAxis axisAt="left" orient="left" ticks={5} {...yGrid} stroke='#2E313E' tickStroke='#ACAFB8'/>
+				<CandlestickSeries width={timeIntervalBarWidth(utcDay)} 
+            stroke={d => d.close > d.open ? "#26A69A" : "#EF5350"}
+						wickStroke={d => d.close > d.open ? "#26A69A" : "#EF5350"}
+						fill={d => d.close > d.open ? "#26A69A" : "#EF5350"}
+            opacity={1} />
         <MouseCoordinateX
             at="bottom"
             orient="bottom"
@@ -77,6 +81,8 @@ let CandleStickChart = (props) => {
 						ticks={5}
 						tickFormat={format(".2s")}
 						zoomEnabled={zoomEvent}
+            stroke='#2E313E'
+            tickStroke='#ACAFB8'
 					/>
 
 					<MouseCoordinateX
@@ -88,18 +94,12 @@ let CandleStickChart = (props) => {
 						orient="left"
 						displayFormat={format(".4s")} />
 
-					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<BarSeries yAccessor={d => d.volume} width={timeIntervalBarWidth(utcDay)} fill="#1C5E5E" opacity={0.9} />
 				</Chart>
 		</ChartCanvas>
 	);
 }
 
-CandleStickChart.propTypes = {
-	data: PropTypes.array.isRequired,
-	width: PropTypes.number.isRequired,
-	ratio: PropTypes.number.isRequired,
-	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-};
 
 
 CandleStickChart = fitWidth(CandleStickChart);
