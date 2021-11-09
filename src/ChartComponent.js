@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Chart from './Chart';
 import { getData } from "./utils"
 
-import { TypeChooser } from "react-stockcharts/lib/helper";
-
 const ChartComponent = () => {
   const [data, setData] = useState()
 
