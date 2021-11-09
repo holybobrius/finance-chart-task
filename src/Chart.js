@@ -2,7 +2,7 @@ import React from "react";
 import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
-import { utcDay } from "d3-time";
+import { utcDay, utcHour } from "d3-time";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
@@ -13,11 +13,13 @@ import BarSeries from "react-stockcharts/lib/series/BarSeries";
 
 let CandleStickChart = (props) => {
 	const { type, width, data, ratio } = props;
-  const { mouseMoveEvent, panEvent, zoomEvent, zoomAnchor } = props;
-	const xAccessor = d => d.date;
+   const { mouseMoveEvent, panEvent, zoomEvent, zoomAnchor } = props;
+	const xAccessor = d => {
+      return d.date
+    };
 	const xExtents = [
-		xAccessor(last(data)),
-		xAccessor(data[data.length - 100])
+		xAccessor(data[0]),
+		xAccessor(last(data))
 	];
 
   const height = 800;
@@ -71,7 +73,7 @@ let CandleStickChart = (props) => {
             displayFormat={format(".2f")} 
         />
 			</Chart>
-      <Chart id={2}
+      {/*<Chart id={2}
 					yExtents={d => d.volume}
 					height={150} origin={(w, h) => [0, h - 150]}
 				>
@@ -95,7 +97,7 @@ let CandleStickChart = (props) => {
 						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} width={timeIntervalBarWidth(utcDay)} fill="#1C5E5E" opacity={0.9} />
-				</Chart>
+  </Chart>*/}
 		</ChartCanvas>
 	);
 }
