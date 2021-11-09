@@ -55,7 +55,7 @@ let CandleStickChart = (props) => {
 
 			<Chart id={1} yExtents={d => [d.high, d.low]}>
 				<XAxis axisAt="bottom" orient="bottom" ticks={23} {...xGrid} stroke='#2E313E' tickStroke='#ACAFB8'/>
-				<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} stroke='#2E313E' tickStroke='#ACAFB8'/>
+				<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} stroke='#2E313E' tickFormat={(v) => v >= 10000 ? (v/10000) + 'x' : v} tickStroke='#ACAFB8'/>
 				<CandlestickSeries width={timeIntervalBarWidth(utcDay)} 
             stroke={d => d.close > d.open ? "#26A69A" : "#EF5350"}
 						wickStroke={d => d.close > d.open ? "#26A69A" : "#EF5350"}
