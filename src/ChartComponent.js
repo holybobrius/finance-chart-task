@@ -15,7 +15,10 @@ const ChartComponent = () => {
       let _prev = data[data.length - 1];
       let d = new Date(_prev.date.getTime());
       d.setDate(d.getDate() + 1);
-      let c = Math.random() > (d.getTime()/86400000 - _prev.date.getTime()/86400000) / 10 ? _prev.close + Math.floor(200 + Math.random() * 1300) : 0;
+      let c = 
+        Math.random() > 0.1 ? 
+        _prev.close + Math.floor(50 + Math.random() * 200) : 
+        _prev.close - Math.floor((d.getTime()/86400000 - _prev.date.getTime()/86400000) * 100 + Math.random() * (d.getTime()/86400000 - _prev.date.getTime()/86400000) * 3000)
       setData([...data, {
         date: d,
         open: _prev.close,
@@ -30,7 +33,7 @@ const ChartComponent = () => {
 
   useEffect(() => {
     addNew()
-    const i = setInterval(addNew, 1000);
+    const i = setInterval(addNew, 100);
     return () => clearInterval(i);
   }, [])
 

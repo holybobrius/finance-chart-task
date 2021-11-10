@@ -18,9 +18,11 @@ let CandleStickChart = (props) => {
       return d.date
     };
 	const xExtents = [
-		xAccessor(data[0]),
-		xAccessor(last(data))
+		data.length < 90 ? xAccessor(data[0]) : xAccessor(data[data.length - 90]),
+		new Date(xAccessor(last(data)).getTime() + 86400000 * 17)
 	];
+
+  console.log(xExtents)
 
   const height = 800;
 
@@ -44,7 +46,7 @@ let CandleStickChart = (props) => {
   console.log(width)
 
 	return (
-		<ChartCanvas height={800}
+		<ChartCanvas initialDisplay={300} height={800}
 					ratio={ratio}
 					width={width}
 					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
@@ -70,7 +72,7 @@ let CandleStickChart = (props) => {
         <MouseCoordinateY
             at="right"
             orient="right"
-            displayFormat={format(".2f")} 
+            displayFormat={((v) => v >= 10000 ? format('.2f')(v/10000) + 'x' : format('.2f')(v))}
         />
 			</Chart>
       {/*<Chart id={2}
