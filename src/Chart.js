@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -8,22 +8,36 @@ import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last, timeIntervalBarWidth } from "react-stockcharts/lib/utils";
-import { MouseCoordinateX, MouseCoordinateY } from "@react-financial-charts/coordinates";
+import { EdgeIndicator, MouseCoordinateX, MouseCoordinateY } from "@react-financial-charts/coordinates";
 
 let CandleStickChart = (props) => {
+	const [ autoScrollLock, setAutoScrollLock ] = useState([]); 
 	const { type, width, data, ratio } = props;
 	const xAccessor = d => {
       return d.date
     };
   
+	useEffect(() => {
+		if(!props.autoScroll) {
+			if(autoScrollLock.length === 0) setAutoScrollLock([
+				data.length < 91 ? xAccessor(data[0]) : xAccessor(data[data.length - 91]),
+				new Date(xAccessor(data.length < 91 ? data[0] : data[data.length - 91]).getTime() + 86400000 * 90)
+			])
+		}
+		else setAutoScrollLock([]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.autoScroll])
+
   // xExtents array is used to set the bounds of X axis. The first element is the left side, and the second is right. For now, 
   // The left element is the date value of the first candle if there are less than 90 candles in the data state, if there are more then 
   // the left element is calculated so that the chart always displays 3 months of candles.
   // the right element is the date value fo the last candle + 17 days. 17 days is needed to create a blank space on the right side of the chart
-	const xExtents = [
+  console.log(autoScrollLock);
+  const xExtents = !props.autoScroll && autoScrollLock.length === 2 ? autoScrollLock : 
+  [
 		data.length < 90 ? xAccessor(data[0]) : xAccessor(data[data.length - 90]),
-		new Date(xAccessor(last(data)).getTime() + 86400000 * 17)
-	];
+		data.length < 90 ? new Date(xAccessor(last(data)).getTime() + 86400000 * 17 + 86400000 * (90 - data.length)) : new Date(xAccessor(last(data)).getTime() + 86400000 * 17)
+  ]
 
   const height = 800;
 
@@ -44,6 +58,8 @@ let CandleStickChart = (props) => {
     tickStrokeOpacity: 0.2,
     tickStrokeWidth: 1
   } : {};
+
+  //console.log(xExtents)
 
 	return (
 		<ChartCanvas initialDisplay={300} height={800}
@@ -76,6 +92,8 @@ let CandleStickChart = (props) => {
             orient="right"
             displayFormat={((v) => Math.abs(v) >= 10000 ? format('.2f')(v/10000) + 'x' : format('.2f')(v))}
         />
+        <EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} stroke='#2E313E' lineStroke={d => d.close > d.open ? "#26A69A" : "#EF5350"} fill={d => d.close > d.open ? "#26A69A" : "#EF5350"} displayFormat={((v) => Math.abs(v) >= 10000 ? format('.2f')(v/10000) + 'x' : format('.2f')(v))} c/>
 			</Chart>
       
       {/*this is volume chart but I've commented it out since you don't need it. */}

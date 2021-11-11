@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Chart from './Chart';
 
 const ChartComponent = () => {
+
+  const [autoScroll, setAutoScroll] = useState(false)
+
   const [data, setData] = useState([{
       date: new Date(2021, 7, 7, 23, 59, 59),
       open: 0,
@@ -45,13 +48,16 @@ const ChartComponent = () => {
 
   useEffect(() => {
     addNew()
-    const i = setInterval(addNew, 1000);
+    const i = setInterval(addNew, 100);
     return () => clearInterval(i);
   }, [])
 
   if(!data) return <div>Loading... </div>
   return(
-    <Chart data={data} />
+    <div>
+      <Chart data={data} autoScroll={autoScroll} />
+      <button onClick={() => setAutoScroll(!autoScroll)}>autoScroll</button>
+    </div>
   )
 }
 
